@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>de.pandarmy</groupId>
     <artifactId>PandaServer</artifactId>
-    <version>1.0</version>
+    <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>PandaServer</name>
@@ -13,11 +15,67 @@
     <properties>
         <java.version>21</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <!-- Versions-Properties -->
+        <main.version>1.0</main.version>
+        <plugin.name>PandaServer</plugin.name>
     </properties>
 
     <build>
         <defaultGoal>clean package</defaultGoal>
+
+        <!-- Dateiname -->
+        <finalName>${plugin.name}-${main.version}.${buildNumber}</finalName>
+
         <plugins>
+
+            <!-- buildNumber aus Datei lesen -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>properties-maven-plugin</artifactId>
+                <version>1.2.1</version>
+                <executions>
+                    <execution>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>read-project-properties</goal>
+                        </goals>
+                        <configuration>
+                            <files>
+                                <file>${project.basedir}/buildnumber.properties</file>
+                            </files>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- buildNumber automatisch erhöhen -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <propertyfile file="${project.basedir}/buildnumber.properties">
+                                    <entry key="buildNumber"
+                                        type="int"
+                                        operation="+"
+                                        value="1"
+                                        pattern="0"/>
+                                </propertyfile>
+                            </target>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Compiler -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -27,6 +85,22 @@
                     <target>${java.version}</target>
                 </configuration>
             </plugin>
+
+            <!-- Manifest-Version -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.3.0</version>
+                <configuration>
+                    <archive>
+                        <manifestEntries>
+                            <Implementation-Version>${main.version}.${buildNumber}</Implementation-Version>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+
+            <!-- Shade -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
@@ -40,7 +114,9 @@
                     </execution>
                 </executions>
             </plugin>
+
         </plugins>
+
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
@@ -64,4 +140,5 @@
             <scope>provided</scope>
         </dependency>
     </dependencies>
+
 </project>

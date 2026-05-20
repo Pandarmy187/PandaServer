@@ -2,3 +2,5 @@ name: PandaServer
 version: '1.0'
 main: de.pandarmy.pandaServer.Main
 api-version: '1.21'
+commands:
+  ping:
