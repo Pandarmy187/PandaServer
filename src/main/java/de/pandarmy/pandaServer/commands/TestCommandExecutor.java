@@ -28,11 +28,11 @@ public class TestCommandExecutor implements CommandExecutor {
                 }
 
 
-                OfferData data = new OfferData(player.getUniqueId(), price, item);
+                OfferData data = new OfferData(Main.getInstance().getConfig().getInt("JsonOfferCounter") ,player.getUniqueId(), player.getName(), price, item);
 
                 player.getInventory().removeItem(item);
                 int jsonOfferCounter = Main.getInstance().getConfig().getInt("JsonOfferCounter");
-                Main.getJsonManager().createJSON(data, jsonOfferCounter + ".json");
+                Main.getJsonManager().createJSON(data, jsonOfferCounter + ".json", Main.offerFolder);
             }catch (Exception e){
                 e.printStackTrace();
                 player.sendMessage("§cFehler: " + e.getMessage());

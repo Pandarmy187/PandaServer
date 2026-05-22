@@ -10,16 +10,16 @@ import java.util.List;
 
 public class JsonManager {
 
-    private Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
-    public void createJSON(OfferData offerData, String path) {
-        File file = new File(Main.offerFolder, path);
+    public <T> void createJSON(T data, String path, File folder) {
+        File file = new File(folder, path);
 
         if (!file.exists()) {
             try {
                 file.createNewFile();
                 Main.getInstance().getLogger().warning("New File has been created: " + path);
-                saveJSON(offerData, file);
+                saveJSON(data, file);
             } catch (IOException e) {
                 e.printStackTrace();
                 Main.getInstance().getLogger().severe(e.toString());
@@ -30,37 +30,47 @@ public class JsonManager {
         Main.getInstance().reloadConfig();
     }
 
-    public void saveJSON(OfferData offerData, File file) {
+    public <T> void saveJSON(T data, File file) {
         try (Writer writer = new FileWriter(file)) {
-            gson.toJson(offerData, writer);
+            gson.toJson(data, writer);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public OfferData getJSON(File file) {
+    public <T> T getJSON(File file, Class<T> clazz) {
         try (Reader reader = new FileReader(file)) {
-            return gson.fromJson(reader, OfferData.class);
+            return gson.fromJson(reader, clazz);
         } catch (IOException e) {
             e.printStackTrace();
         }
         return null;
     }
 
-    public List<OfferData> getAllOffers() {
-        List<OfferData> offers = new ArrayList<>();
+    public <T> List<T> getAllEntries(File folder, Class<T> clazz) {
+        List<T> entries = new ArrayList<>();
 
-        File[] files = Main.offerFolder.listFiles((dir, name) -> name.endsWith(".json"));
+        File[] files = folder.listFiles((dir, name) -> name.endsWith(".json"));
 
-        if (files == null) return offers;
+        if (files == null) return entries;
 
         for (File file : files) {
-            OfferData data = getJSON(file);
+            T data = getJSON(file, clazz);
             if (data != null) {
-                offers.add(data);
+                entries.add(data);
             }
         }
 
-        return offers;
+        return entries;
+    }
+
+    public void removeFile(File folder, String path){
+        File file = new File(folder, path);
+
+        if (file.exists()){
+            file.delete();
+        }else{
+            Main.getInstance().getLogger().warning("File not found: " + path);
+        }
     }
 }

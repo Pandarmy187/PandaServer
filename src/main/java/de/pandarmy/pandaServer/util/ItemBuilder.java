@@ -27,8 +27,9 @@ public class ItemBuilder {
     }
 
     public ItemBuilder setItem(ItemStack localItem) {
-        itemStack = localItem;
+        itemStack = localItem.clone(); // <- clone damit das Original nicht verändert wird
         itemMeta = itemStack.getItemMeta();
+        itemMeta.getPersistentDataContainer().remove(new NamespacedKey(Main.getInstance(), "id"));
         return this;
     }
 
