@@ -26,7 +26,7 @@ public class CoinsCommandExecutor implements CommandExecutor {
                 try {
                     int number = Integer.parseInt(strings[0]);
                     playerData.setCoins(number);
-                    player.sendMessage("§aCoins set to §e" + number);
+                    player.sendMessage("§7[§eBank§7] §aCoins set to §e" + number);
                 } catch (NumberFormatException e) {
                     player.sendMessage("§cInvalid number: " + strings[0]);
                 }

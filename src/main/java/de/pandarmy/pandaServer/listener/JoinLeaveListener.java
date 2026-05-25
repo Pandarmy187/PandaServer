@@ -18,7 +18,7 @@ public class JoinLeaveListener implements Listener {
 
         Player player = (Player) event.getPlayer();
         UUID playerUUID = player.getUniqueId();
-        Main.getJsonManager().createJSON(new PlayerData(player.getName(), playerUUID), playerUUID + ".json", Main.playerFolder);
+        Main.getJsonManager().createJSON(new PlayerData(player.getName(), playerUUID, System.currentTimeMillis()), playerUUID + ".json", Main.playerFolder);
 
     }
 

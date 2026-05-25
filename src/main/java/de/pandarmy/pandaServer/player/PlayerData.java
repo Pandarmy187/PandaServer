@@ -5,14 +5,18 @@ import de.pandarmy.pandaServer.Main;
 import java.io.File;
 import java.util.UUID;
 
+
 public class PlayerData {
     private final String playerName;
     private final UUID uuid;
     private int coins;
+    private final long firstJoinTimestamp;
 
-    public PlayerData(String playerName, UUID uuid) {
+
+    public PlayerData(String playerName, UUID uuid, long firstJoinTimestamp) {
         this.playerName = playerName;
         this.uuid = uuid;
+        this.firstJoinTimestamp = firstJoinTimestamp;
         this.coins = 0;
     }
 

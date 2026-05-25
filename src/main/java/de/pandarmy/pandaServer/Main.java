@@ -3,7 +3,7 @@ package de.pandarmy.pandaServer;
 import de.pandarmy.pandaServer.commands.CoinsCommandExecutor;
 import de.pandarmy.pandaServer.commands.PingCommandExecutor;
 import de.pandarmy.pandaServer.commands.ShopCommandExecutor;
-import de.pandarmy.pandaServer.commands.TestCommandExecutor;
+import de.pandarmy.pandaServer.commands.SellCommandExecutor;
 import de.pandarmy.pandaServer.listener.GUIListener;
 import de.pandarmy.pandaServer.listener.JoinLeaveListener;
 import de.pandarmy.pandaServer.offer.JsonManager;
@@ -24,7 +24,7 @@ public final class Main extends JavaPlugin {
         Instance = this;
 
         getCommand("ping").setExecutor(new PingCommandExecutor());
-        getCommand("test").setExecutor(new TestCommandExecutor());
+        getCommand("sell").setExecutor(new SellCommandExecutor());
         getCommand("shop").setExecutor(new ShopCommandExecutor());
         getCommand("coins").setExecutor(new CoinsCommandExecutor());
 

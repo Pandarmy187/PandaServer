@@ -2,6 +2,8 @@ package de.pandarmy.pandaServer.commands;
 
 import de.pandarmy.pandaServer.Main;
 import de.pandarmy.pandaServer.offer.OfferData;
+import de.pandarmy.pandaServer.util.Inventories;
+import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -10,31 +12,23 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 
-public class TestCommandExecutor implements CommandExecutor {
+public class SellCommandExecutor implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String @NotNull [] strings) {
-        if (commandSender instanceof Player player){
-
+        if (commandSender instanceof Player player) {
             if (strings.length != 1) return false;
-            String arg1 = strings[0];
-            try{
-                int price = Integer.parseInt(arg1);
-
+            try {
+                int price = Integer.parseInt(strings[0]);
                 ItemStack item = player.getInventory().getItemInMainHand();
 
-                if (item == null){
+                if (item == null || item.getType() == Material.AIR) {
                     player.sendMessage("§cNo item in main hand");
                     return false;
                 }
 
+                player.openInventory(Inventories.writeSellInventory(item, price));
 
-                OfferData data = new OfferData(Main.getInstance().getConfig().getInt("JsonOfferCounter") ,player.getUniqueId(), player.getName(), price, item);
-
-                player.getInventory().removeItem(item);
-                int jsonOfferCounter = Main.getInstance().getConfig().getInt("JsonOfferCounter");
-                Main.getJsonManager().createJSON(data, jsonOfferCounter + ".json", Main.offerFolder);
-            }catch (Exception e){
-                e.printStackTrace();
+            } catch (Exception e) {
                 player.sendMessage("§cFehler: " + e.getMessage());
             }
         }
